@@ -1,6 +1,8 @@
 # DL0MUC
 
-## Logische Ansicht, Stand 23.03.2018
+## Logische Ansicht
+
+Planung Stand 23.03.2018
 
 ```graphviz
     graph {
@@ -25,10 +27,18 @@
 
             node [label="Butternut"] ant_butternut;
             node [label="GPS Antenne"] ant_sat;
+            node [label="70cm Antenne"] ant_70cm;
         }
 
         subgraph cluster_rack {
             label="Rack";
+            color=green;
+            node [color=green,label="Switch"] eth_switch_rack;
+            node [color=green,label="APRS Digi"] aprs_digi;
+            node [color=green,label="9k6 Digipeater"] digi_9k6;
+            node [color=green,label="DMR Repeater"] dmr_repeater;
+
+            node [color=green,label="2m/70cm Splitter"] splitter_2m70cm;
         }
 
         subgraph cluster_aufzug {
@@ -41,19 +51,29 @@
 
         subgraph cluster_shack {
             label="Shack";
+            rank="sink";
             node [label="ICOM"] trx_icom;
-            node [label="APRS Digi"] aprs_digi;
         }
 
-        empfaengr -- ant_discone;
+        empfaengr -- ant_discone [color="red"];
 
-        trx_icom -- ant_butternut;
-        aprs_digi -- ant_diamond;
-        rad1o -- ant_sat;
-        ant_hamnet -- eth_switch_mast;
-        empfaengr -- eth_switch_mast;
+        trx_icom -- ant_butternut [color="red"];
+        rad1o -- ant_sat [color="red"];
+        ant_hamnet -- eth_switch_mast [color="blue"];
+        empfaengr -- eth_switch_mast [color="blue"];
 
-        s_pc -- eth_patchpanel;
-        eth_switch_mast -- eth_patchpanel;
+        aprs_digi -- splitter_2m70cm [color="red"];
+        digi_9k6 -- splitter_2m70cm [color="red"];
+        splitter_2m70cm -- ant_diamond [color="red"];
+
+        dmr_repeater -- ant_70cm [color="red"];
+
+        eth_switch_rack -- aprs_digi [color="blue"];
+        eth_switch_rack -- eth_switch_mast [color="blue"];
+        eth_switch_rack -- dmr_repeater [color="blue"];
+        eth_switch_rack -- digi_9k6 [color="blue"];
+
+        eth_patchpanel -- s_pc [color="blue"];
+        eth_patchpanel -- eth_switch_rack [color="blue"];
     }
 ```
